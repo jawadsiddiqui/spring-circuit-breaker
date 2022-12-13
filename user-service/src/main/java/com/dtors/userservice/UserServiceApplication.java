@@ -1,5 +1,6 @@
 package com.dtors.userservice;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,12 +14,23 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/user")
 public class UserServiceApplication {
 
+	public static final String CATALOGUE_SERVICE_URL = "http://localhost:8081";
+
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@GetMapping("/check")
-	public String getCatalogue(){
 
+
+	@GetMapping("/displayCatalogue")
+	@CircuitBreaker(name = "", fallbackMethod = "falBackMethod")
+	public String getCatalogue(){
+		String catalogueResponse = restTemplate.getForObject(CATALOGUE_SERVICE_URL+"/catalogue", String.class);
+		
+		return catalogueResponse;
+	}
+
+	public String falBackMethod()
+	{
 		return "";
 	}
 	public static void main(String[] args) {
