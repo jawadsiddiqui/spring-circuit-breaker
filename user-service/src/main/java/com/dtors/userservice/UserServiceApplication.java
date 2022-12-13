@@ -4,6 +4,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ public class UserServiceApplication {
 	@CircuitBreaker(name = "", fallbackMethod = "falBackMethod")
 	public String getCatalogue(){
 		String catalogueResponse = restTemplate.getForObject(CATALOGUE_SERVICE_URL+"/catalogue", String.class);
-		
+
 		return catalogueResponse;
 	}
 
@@ -37,4 +38,9 @@ public class UserServiceApplication {
 		SpringApplication.run(UserServiceApplication.class, args);
 	}
 
+
+	@Bean
+	public RestTemplate template(){
+		return new RestTemplate();
+	}
 }
